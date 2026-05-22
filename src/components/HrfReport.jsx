@@ -124,30 +124,27 @@ export default function HrfReport({ data, sections, uploadedImages, apiError }) 
           <HtmlSection html={sections.observations} />
           <h3>REFERENCE:</h3>
           <HtmlSection html={sections.reference} />
+          <h3>AREA INSPECTED:</h3>
+          <HtmlSection html={sections.areaInspected} />
         </div>
       </Page>
 
       <Page pageNum={nextPage()}>
         <div className="hrf-body">
-          <h3>AREA INSPECTED:</h3>
-          <HtmlSection html={sections.areaInspected} />
           <h3>{data.floorLocation} INSPECTION OBSERVATIONS:</h3>
           <HtmlSection html={sections.floorObservations} />
           <h3>REBAR INSPECTION OBSERVATIONS:</h3>
           <HtmlSection html={sections.rebarObservations} />
+          <h3>CONCRETE PLACEMENT SUPERVISION:</h3>
+          <HtmlSection html={sections.concreteSupervision} />
         </div>
       </Page>
 
       <Page pageNum={nextPage()}>
         <div className="hrf-body">
-          <h3>CONCRETE PLACEMENT SUPERVISION:</h3>
-          <HtmlSection html={sections.concreteSupervision} />
           <h3>GENERAL NOTE:</h3>
           <HtmlSection html={sections.generalNote} />
         </div>
-      </Page>
-
-      <Page pageNum={nextPage()}>
         <div className="hrf-remarks">
           <div className="hrf-remarks-title">REMARKS (For locations noted above):</div>
           <div className="hrf-remark-row">
