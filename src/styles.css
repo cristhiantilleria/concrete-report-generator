@@ -850,6 +850,39 @@ select option {
   max-width: 51rem;
 }
 
+.edit-hint {
+  background: rgba(74, 158, 255, 0.1);
+  border: 1px solid var(--accent2);
+  color: var(--accent2);
+  padding: 0.5rem 0.75rem;
+  border-radius: 3px;
+  font-size: 0.6875rem;
+  margin: 0 auto 0.875rem;
+  font-family: var(--font-mono);
+  max-width: 51rem;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+/* Inline-editable report sections. Subtle dashed outline on hover,
+   stronger outline when focused. Stripped completely in print. */
+.hrf-editable {
+  outline: none;
+  border-radius: 2px;
+  padding: 0.125rem 0.25rem;
+  margin: 0 -0.25rem;
+  transition: background 0.12s, box-shadow 0.12s;
+  cursor: text;
+}
+.hrf-editable:hover {
+  background: rgba(74, 158, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(74, 158, 255, 0.25);
+}
+.hrf-editable:focus {
+  background: rgba(74, 158, 255, 0.06);
+  box-shadow: inset 0 0 0 1px var(--accent2);
+}
+
 .helper-box {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -902,8 +935,18 @@ select option {
   .form-panel,
   .preview-header,
   .app-header,
-  .error-banner {
+  .error-banner,
+  .edit-hint {
     display: none !important;
+  }
+
+  /* Strip all editing affordances from printed output */
+  .hrf-editable {
+    outline: none !important;
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .app-body {

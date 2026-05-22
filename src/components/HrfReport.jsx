@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { HRF_LOGO_URL } from '../logo.js';
 
 const STATUS_CHECKS = {
@@ -57,12 +58,42 @@ function Page({ pageNum, children }) {
   );
 }
 
-// Render section HTML safely — sections originate from API or local template.
-function HtmlSection({ html }) {
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+// Render section HTML and let the user edit it in place. The DOM owns the
+// editing state while the user types; on blur we lift the new innerHTML back
+// up so PDF/.docx exports pick up edits. We deliberately do NOT bind innerHTML
+// to the html prop on every render — that would clobber the cursor and any
+// in-progress edits.
+function HtmlSection({ html, sectionKey, onChange }) {
+  const ref = useRef(null);
+
+  // Sync incoming html → DOM only when it actually changes from outside
+  // (e.g. a re-generation), and only when the user isn't currently editing.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (document.activeElement === el) return;
+    if (el.innerHTML !== html) el.innerHTML = html || '';
+  }, [html]);
+
+  const handleBlur = () => {
+    if (!onChange || !ref.current) return;
+    const next = ref.current.innerHTML;
+    if (next !== html) onChange(sectionKey, next);
+  };
+
+  return (
+    <div
+      ref={ref}
+      className="hrf-editable"
+      contentEditable
+      suppressContentEditableWarning
+      spellCheck
+      onBlur={handleBlur}
+    />
+  );
 }
 
-export default function HrfReport({ data, sections, uploadedImages, apiError }) {
+export default function HrfReport({ data, sections, uploadedImages, apiError, onSectionChange }) {
   const dateObj = new Date(data.inspDate + 'T12:00:00');
   const dateStr = dateObj
     .toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
@@ -121,29 +152,29 @@ export default function HrfReport({ data, sections, uploadedImages, apiError }) 
         </table>
         <div className="hrf-body">
           <h3>OBSERVATIONS:</h3>
-          <HtmlSection html={sections.observations} />
+          <HtmlSection html={sections.observations} sectionKey="observations" onChange={onSectionChange} />
           <h3>REFERENCE:</h3>
-          <HtmlSection html={sections.reference} />
+          <HtmlSection html={sections.reference} sectionKey="reference" onChange={onSectionChange} />
           <h3>AREA INSPECTED:</h3>
-          <HtmlSection html={sections.areaInspected} />
+          <HtmlSection html={sections.areaInspected} sectionKey="areaInspected" onChange={onSectionChange} />
         </div>
       </Page>
 
       <Page pageNum={nextPage()}>
         <div className="hrf-body">
           <h3>{data.floorLocation} INSPECTION OBSERVATIONS:</h3>
-          <HtmlSection html={sections.floorObservations} />
+          <HtmlSection html={sections.floorObservations} sectionKey="floorObservations" onChange={onSectionChange} />
           <h3>REBAR INSPECTION OBSERVATIONS:</h3>
-          <HtmlSection html={sections.rebarObservations} />
+          <HtmlSection html={sections.rebarObservations} sectionKey="rebarObservations" onChange={onSectionChange} />
           <h3>CONCRETE PLACEMENT SUPERVISION:</h3>
-          <HtmlSection html={sections.concreteSupervision} />
+          <HtmlSection html={sections.concreteSupervision} sectionKey="concreteSupervision" onChange={onSectionChange} />
         </div>
       </Page>
 
       <Page pageNum={nextPage()}>
         <div className="hrf-body">
           <h3>GENERAL NOTE:</h3>
-          <HtmlSection html={sections.generalNote} />
+          <HtmlSection html={sections.generalNote} sectionKey="generalNote" onChange={onSectionChange} />
         </div>
         <div className="hrf-remarks">
           <div className="hrf-remarks-title">REMARKS (For locations noted above):</div>

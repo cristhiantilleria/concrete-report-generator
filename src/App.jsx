@@ -105,6 +105,10 @@ export default function App() {
     setIsGenerating(false)
   }
 
+  const handleSectionChange = (key, html) => {
+    setReport((prev) => (prev ? { ...prev, sections: { ...prev.sections, [key]: html } } : prev))
+  }
+
   const handleDownload = async () => {
     if (!report) return
     setIsDownloading(true)
@@ -183,11 +187,15 @@ export default function App() {
 
             {report && !isGenerating && (
               <div id="reportContainer" className="visible">
+                <div className="edit-hint">
+                  ✎ Click any section below to edit. Changes are included in the PDF and .docx exports.
+                </div>
                 <HrfReport
                   data={report.data}
                   sections={report.sections}
                   uploadedImages={uploadedImages}
                   apiError={report.apiError}
+                  onSectionChange={handleSectionChange}
                 />
               </div>
             )}
