@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const apiKey = env.VITE_ANTHROPIC_API_KEY
+  // Prefer ANTHROPIC_API_KEY (same name used by the Vercel function);
+  // fall back to the legacy VITE_-prefixed name for existing local setups.
+  const apiKey = env.ANTHROPIC_API_KEY || env.VITE_ANTHROPIC_API_KEY
 
   return {
     plugins: [react()],
