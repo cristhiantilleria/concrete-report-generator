@@ -909,7 +909,116 @@ select option {
 }
 
 /* ============================================================
-   11. Print
+   11. Mobile / responsive (≤900px)
+   --------------------------------------------------------------
+   Below the breakpoint we stack form-panel + preview-panel
+   vertically so each gets the full viewport width, and let the
+   whole document scroll naturally instead of locking 100vh.
+   Letter-size report pages keep their 800px width and scroll
+   horizontally inside the preview area (users can pinch-zoom).
+   ============================================================ */
+@media (max-width: 900px) {
+  body,
+  #root {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  /* Header keeps its row layout but tightens up */
+  header.app-header {
+    padding: 0 0.875rem;
+  }
+  .header-right {
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+  }
+  .header-right span:first-child {
+    display: none; /* "HRF Services Corp · v0.2" — drop on narrow screens */
+  }
+
+  /* Stack the two main panels */
+  .app-body {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Form panel: full width, grows to its content, border below instead of right */
+  .form-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+  }
+  .form-scroll {
+    overflow: visible;
+    padding: 1rem;
+  }
+  .form-nav {
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
+    z-index: 1;
+  }
+  .row-2 {
+    grid-template-columns: 1fr; /* one field per row on mobile */
+  }
+
+  /* Preview panel: full width, scroll its own content */
+  .preview-panel {
+    width: 100%;
+    overflow: visible;
+  }
+  .preview-header {
+    padding: 0.75rem 0.875rem;
+  }
+  .preview-actions .btn-sm {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.625rem;
+  }
+  .preview-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+    height: auto;
+    padding: 1rem 0;
+  }
+
+  /* The 800px-wide report pages stay at their true width.
+     The preview-scroll above provides horizontal scroll so users
+     can pan + pinch-zoom to read the full document. */
+  .hrf-page {
+    margin: 0 auto 1rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .edit-hint {
+    font-size: 0.625rem;
+    margin: 0 0.875rem 0.75rem;
+    max-width: none;
+  }
+}
+
+/* Phone-sized — tighten further */
+@media (max-width: 480px) {
+  header.app-header {
+    height: 3rem;
+  }
+  .logo {
+    font-size: 0.75rem;
+  }
+  .panel-header {
+    padding: 0.75rem 0.875rem;
+  }
+  .preview-actions {
+    flex-wrap: wrap;
+  }
+}
+
+
+/* ============================================================
+   12. Print
    ============================================================ */
 @media print {
   /* Force color fidelity */

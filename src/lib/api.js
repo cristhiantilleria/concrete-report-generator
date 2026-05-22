@@ -75,7 +75,45 @@ concreteSupervision — A <ul> covering, in this order:
 
 generalNote — One paragraph in a <p>. State that at the time of inspection, slab preparation, reinforcing steel installation, and cast-in-place concrete placement operations associated with slab construction were found to be in general conformance with approved structural drawings, approved construction documents, project specifications, and applicable NYC Building Code requirements. If the input contains a remarks field, integrate it naturally without inventing new findings.
 
-Remember: stay strictly within the provided data. Do not fabricate dimensions, suppliers, defects, or code references not asked for.`
+Remember: stay strictly within the provided data. Do not fabricate dimensions, suppliers, defects, or code references not asked for.
+
+FORMAT ANCHOR — use the EXACT shape shown below. Substitute the input values, do not invent new ones. This is the rebarObservations section to demonstrate nesting depth; apply the same structural discipline to every section.
+
+<ul>
+  <li>Slab reinforcement at the 6th floor was observed during installation in accordance with approved structural drawings and reinforcing steel shop drawings.</li>
+  <li>Slab reinforcement consists of:
+    <ul>
+      <li>#4 reinforcing bars typical (bottom reinforcement E-W and N-S directions)</li>
+      <li>#5 reinforcing bars at top reinforcement and additional reinforcing zones</li>
+      <li>Spacing approximately 12 inches on center each way (E.W. and N.S.), typical unless otherwise noted</li>
+      <li>Reinforcing steel conforming to ASTM A615 Grade 60 requirements</li>
+    </ul>
+  </li>
+  <li>Slab thickness observed and reviewed per approved structural drawings:
+    <ul><li>Approximate slab thickness: 8 inches typical unless otherwise noted on plans</li></ul>
+  </li>
+  <li>Reinforcing steel was observed to be:
+    <ul>
+      <li>Properly supported on chairs prior to concrete placement</li>
+      <li>Adequately tied and secured</li>
+      <li>Maintained at proper spacing during placement operations</li>
+    </ul>
+  </li>
+  <li>Reinforcement continuity was verified at:
+    <ul><li>Slab transitions</li><li>Construction joints</li><li>Slab edge conditions</li></ul>
+  </li>
+  <li>Additional reinforcing steel was observed at:
+    <ul><li>Slab perimeter locations</li><li>Edge conditions and beam/slab interface zones</li><li>Openings and localized reinforcing zones as indicated on approved structural drawings</li></ul>
+  </li>
+  <li>Stair A & Stair B reinforcement (3rd to 4th floor) observed including:
+    <ul><li>#4 bars @12" typical for distribution reinforcement</li><li>Additional dowels and continuous bars at stair transitions</li><li>Reinforcement continuity maintained between slab and stair elements per typical stair details</li></ul>
+  </li>
+  <li>Reinforcing bars were observed to be:
+    <ul><li>Free of excessive displacement</li><li>Clean and properly tied</li><li>Properly aligned in accordance with approved structural drawings</li></ul>
+  </li>
+</ul>
+
+This is the exact structural template — same depth, same ordering, same closing phrases — that every report must follow.`
 
 export async function callClaudeAPI(formData) {
   const userMessage = `Generate the inspection report sections for the following project. Use only the values below — do not invent or substitute.
@@ -89,6 +127,9 @@ ${JSON.stringify(formData, null, 2)}`
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 4000,
+      // Low temperature for deterministic, structurally consistent output
+      // across runs — same data should produce the same shape every time.
+      temperature: 0.2,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: userMessage }],
     }),
